@@ -20,9 +20,16 @@ const OVERWRITE: &[(&str, &str)] = &[
     ("enable-lan-discovery", "N"),
 ];
 
-const OVERWRITE_LOCAL: &[(&str, &str)] = &[("disable-discovery-panel", "Y")];
+const HARD: &[(&str, &str)] = &[("disable-ab", "Y"), ("disable-account", "Y")];
+
+const OVERWRITE_LOCAL: &[(&str, &str)] = &[
+    ("disable-discovery-panel", "Y"),
+    ("disable-group-panel", "Y"),
+];
 
 const DEFAULT_LOCAL: &[(&str, &str)] = &[("lang", "ru"), ("theme", "dark")];
+
+const DEFAULT_DISPLAY: &[(&str, &str)] = &[("show_quality_monitor", "Y")];
 
 fn insert(map: &std::sync::RwLock<std::collections::HashMap<String, String>>, kv: &[(&str, &str)]) {
     let mut m = map.write().unwrap();
@@ -37,4 +44,6 @@ pub fn apply_defaults() {
     insert(&config::OVERWRITE_SETTINGS, OVERWRITE);
     insert(&config::OVERWRITE_LOCAL_SETTINGS, OVERWRITE_LOCAL);
     insert(&config::DEFAULT_LOCAL_SETTINGS, DEFAULT_LOCAL);
+    insert(&config::HARD_SETTINGS, HARD);
+    insert(&config::DEFAULT_DISPLAY_SETTINGS, DEFAULT_DISPLAY);
 }
