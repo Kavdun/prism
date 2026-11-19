@@ -899,14 +899,13 @@ class _GeneralState extends State<_General> {
     }(), hasData: (res) {
       Map<String, String> data = res as Map<String, String>;
       List<dynamic> langsList = jsonDecode(data['langs']!);
+      langsList = langsList.where((v) => v[0] == 'ru' || v[0] == 'en').toList();
       Map<String, String> langsMap = {for (var v in langsList) v[0]: v[1]};
       List<String> keys = langsMap.keys.toList();
       List<String> values = langsMap.values.toList();
-      keys.insert(0, defaultOptionLang);
-      values.insert(0, translate('Default'));
       String currentKey = bind.mainGetLocalOption(key: kCommConfKeyLang);
       if (!keys.contains(currentKey)) {
-        currentKey = defaultOptionLang;
+        currentKey = 'ru';
       }
       final isOptFixed = isOptionFixed(kCommConfKeyLang);
       return ComboBox(
