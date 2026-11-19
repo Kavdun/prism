@@ -62,6 +62,9 @@ jobs:
           sed -i -E 's|pub static ref APP_NAME: RwLock<String> = RwLock::new\("RustDesk"\.to_owned\(\)\);|pub static ref APP_NAME: RwLock<String> = RwLock::new("Prism".to_owned());|' $f
           grep -nE '^pub const (RENDEZVOUS_SERVERS|RS_PUB_KEY)|APP_NAME: RwLock' $f
           grep -q "${PRISM_SERVER}" $f && grep -q "${PRISM_KEY}" $f && grep -q 'RwLock::new("Prism"' $f
+          u=flutter/lib/prism/update.dart
+          sed -i -E "s|^const int kPrismBuild = 0;|const int kPrismBuild = ${{ github.run_number }};|" $u
+          grep -n "kPrismBuild = ${{ github.run_number }};" $u
 
       - name: Restore bridge files
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -157,7 +160,9 @@ jobs:
           python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/Prism.exe
           popd
           mkdir -p ./SignOutput
-          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/Prism-${{ env.VERSION }}-x86_64.exe
+          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/Prism-${{ env.VERSION }}-b${{ github.run_number }}-x86_64.exe
+          echo "{\"build\": ${{ github.run_number }}, \"version\": \"${{ env.VERSION }}\", \"file\": \"Prism-${{ env.VERSION }}-b${{ github.run_number }}-x86_64.exe\"}" > ./SignOutput/version.json
+          cat ./SignOutput/version.json
 
       - name: Upload exe
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -166,10 +171,20 @@ jobs:
           path: ./SignOutput/*.exe
           if-no-files-found: error
 
+      - name: Remove previous release
+        if: ${{ inputs.publish-release }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release delete prism-latest --cleanup-tag -y -R ${{ github.repository }} || true
+
       - name: Publish release
         if: ${{ inputs.publish-release }}
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           prerelease: true
           tag_name: prism-latest
-          files: ./SignOutput/*.exe
+          name: Prism build ${{ github.run_number }}
+          files: |
+            ./SignOutput/*.exe
+            ./SignOutput/version.json

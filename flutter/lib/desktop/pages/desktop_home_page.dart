@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter_hbb/prism/update.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -704,6 +706,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   @override
   void initState() {
     super.initState();
+    Future.delayed(const Duration(seconds: 5), prismCheckUpdate);
     _updateTimer = periodic_immediate(const Duration(seconds: 1), () async {
       await gFFI.serverModel.fetchID();
       final error = await bind.mainGetError();
