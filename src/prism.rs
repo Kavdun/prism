@@ -14,10 +14,11 @@ const BUILTIN: &[(&str, &str)] = &[
     ("disable-change-id", "Y"),
 ];
 
-const OVERWRITE: &[(&str, &str)] = &[
-    ("verification-method", "use-permanent-password"),
-    ("approve-mode", "password"),
-    ("enable-lan-discovery", "N"),
+const OVERWRITE: &[(&str, &str)] = &[("enable-lan-discovery", "N")];
+
+const DEFAULT: &[(&str, &str)] = &[
+    ("verification-method", "use-both-passwords"),
+    ("approve-mode", "password-click"),
 ];
 
 const HARD: &[(&str, &str)] = &[("disable-ab", "Y"), ("disable-account", "Y")];
@@ -42,6 +43,7 @@ pub fn apply_defaults() {
     *config::APP_NAME.write().unwrap() = APP_NAME.to_owned();
     insert(&config::BUILTIN_SETTINGS, BUILTIN);
     insert(&config::OVERWRITE_SETTINGS, OVERWRITE);
+    insert(&config::DEFAULT_SETTINGS, DEFAULT);
     insert(&config::OVERWRITE_LOCAL_SETTINGS, OVERWRITE_LOCAL);
     insert(&config::DEFAULT_LOCAL_SETTINGS, DEFAULT_LOCAL);
     insert(&config::HARD_SETTINGS, HARD);
