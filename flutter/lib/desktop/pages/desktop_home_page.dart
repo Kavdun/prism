@@ -593,6 +593,20 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         content != 'install_tip') {
       return const SizedBox();
     }
+    if (content == 'install_tip') {
+      return Container(
+        width: double.infinity,
+        margin: EdgeInsets.fromLTRB(20, marginTop, 20, 20),
+        child: ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: const Icon(Icons.download_rounded, size: 18),
+          label: Text(translate(btnText)),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+          ),
+        ),
+      );
+    }
     void closeCard() async {
       if (closeOption != null) {
         await bind.mainSetLocalOption(key: closeOption, value: 'N');
