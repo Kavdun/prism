@@ -25,17 +25,10 @@ Future<bool> _installUpdate(String url) async {
     if (r.statusCode != 200 || r.bodyBytes.length < 1000000) return false;
     final tmp = '${Directory.systemTemp.path}\\Prism-update.exe';
     await File(tmp).writeAsBytes(r.bodyBytes, flush: true);
-    final p = tmp.replaceAll("'", "''");
-    await Process.start(
-        'powershell',
-        [
-          '-NoProfile',
-          '-WindowStyle',
-          'Hidden',
-          '-Command',
-          "Start-Process -FilePath '$p' -ArgumentList '--silent-install' -Verb RunAs"
-        ],
-        mode: ProcessStartMode.detached);
+    if (!bind.mainPrismRunUpdate(path: tmp)) return false;
+    showToast(_isRu()
+        ? 'Устанавливаю обновление, Prism перезапустится…'
+        : 'Installing update, Prism will restart…');
     return true;
   } catch (_) {
     return false;

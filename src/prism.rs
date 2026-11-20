@@ -39,6 +39,22 @@ fn insert(map: &std::sync::RwLock<std::collections::HashMap<String, String>>, kv
     }
 }
 
+#[cfg(windows)]
+pub fn run_update(path: &str) -> bool {
+    match crate::platform::windows::run_uac(path, "--silent-install") {
+        Ok(ok) => ok,
+        Err(e) => {
+            hbb_common::log::error!("prism update failed: {}", e);
+            false
+        }
+    }
+}
+
+#[cfg(not(windows))]
+pub fn run_update(_path: &str) -> bool {
+    false
+}
+
 pub fn apply_defaults() {
     *config::APP_NAME.write().unwrap() = APP_NAME.to_owned();
     insert(&config::BUILTIN_SETTINGS, BUILTIN);

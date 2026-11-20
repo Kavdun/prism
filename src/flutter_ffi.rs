@@ -2444,6 +2444,10 @@ pub fn main_get_new_version() -> SyncReturn<String> {
     SyncReturn(get_new_version())
 }
 
+pub fn main_prism_run_update(path: String) -> SyncReturn<bool> {
+    SyncReturn(crate::prism::run_update(&path))
+}
+
 pub fn main_update_me() -> SyncReturn<bool> {
     update_me("".to_owned());
     SyncReturn(true)
